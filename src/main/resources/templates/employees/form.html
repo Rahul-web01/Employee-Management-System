@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Employee Form')}"></head>
+<body class="bg-light">
+
+<nav th:replace="~{fragments :: navbar}"></nav>
+
+<div class="container" style="max-width: 720px;">
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h4 class="mb-4" th:text="${employee.id == null ? 'Add Employee' : 'Edit Employee'}">Employee</h4>
+
+            <form th:action="@{/employees/save}" th:object="${employee}" method="post" novalidate>
+                <input type="hidden" th:field="*{id}">
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label">First name</label>
+                        <input type="text" class="form-control" th:field="*{firstName}" th:errorclass="is-invalid">
+                        <div class="invalid-feedback" th:errors="*{firstName}">Error</div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Last name</label>
+                        <input type="text" class="form-control" th:field="*{lastName}" th:errorclass="is-invalid">
+                        <div class="invalid-feedback" th:errors="*{lastName}">Error</div>
+                    </div>
+
+                    <div class="col-12">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-control" th:field="*{email}" th:errorclass="is-invalid">
+                        <div class="invalid-feedback" th:errors="*{email}">Error</div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Designation</label>
+                        <input type="text" class="form-control" th:field="*{designation}" th:errorclass="is-invalid">
+                        <div class="invalid-feedback" th:errors="*{designation}">Error</div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Department</label>
+                        <select class="form-select" name="departmentId"
+                                th:classappend="${#fields.hasErrors('department')} ? 'is-invalid' : ''">
+                            <option value="">-- Select --</option>
+                            <option th:each="d : ${departments}"
+                                    th:value="${d.id}"
+                                    th:text="${d.name}"
+                                    th:selected="${selectedDepartmentId != null and selectedDepartmentId == d.id}">
+                            </option>
+                        </select>
+                        <div class="invalid-feedback" th:errors="*{department}">Error</div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Salary (₹)</label>
+                        <input type="number" step="0.01" class="form-control" th:field="*{salary}" th:errorclass="is-invalid">
+                        <div class="invalid-feedback" th:errors="*{salary}">Error</div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Hire date</label>
+                        <input type="date" class="form-control" th:field="*{hireDate}" th:errorclass="is-invalid">
+                        <div class="invalid-feedback" th:errors="*{hireDate}">Error</div>
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-success">Save</button>
+                    <a class="btn btn-outline-secondary" th:href="@{/employees}">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

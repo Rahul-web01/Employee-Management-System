@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Employees')}"></head>
+<body class="bg-light">
+
+<nav th:replace="~{fragments :: navbar}"></nav>
+
+<div class="container">
+
+    <!-- Search box -->
+    <form class="row g-2 mb-3" th:action="@{/employees}" method="get">
+        <div class="col-sm-8 col-md-6">
+            <input type="text" name="keyword" th:value="${keyword}"
+                   class="form-control" placeholder="Search by first or last name">
+        </div>
+        <div class="col-auto">
+            <button class="btn btn-primary" type="submit">Search</button>
+            <a class="btn btn-outline-secondary" th:href="@{/employees}">Clear</a>
+        </div>
+    </form>
+
+    <!-- Employee table -->
+    <div class="card shadow-sm">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-dark">
+                <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Designation</th>
+                    <th>Department</th>
+                    <th>Salary</th>
+                    <th>Hired</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="e : ${employees}">
+                    <td th:text="${e.id}">1</td>
+                    <td th:text="${e.firstName + ' ' + e.lastName}">Name</td>
+                    <td th:text="${e.email}">email</td>
+                    <td th:text="${e.designation}">Developer</td>
+                    <td>
+                        <span class="badge bg-info text-dark"
+                              th:text="${e.department != null ? e.department.name : '-'}">Dept</span>
+                    </td>
+                    <td th:text="${e.salary != null ? '₹ ' + #numbers.formatDecimal(e.salary, 1, 'COMMA', 2, 'POINT') : '-'}">0</td>
+                    <td th:text="${e.hireDate}">2026-01-01</td>
+                    <td class="text-end">
+                        <a class="btn btn-sm btn-outline-primary"
+                           th:href="@{/employees/edit/{id}(id=${e.id})}">Edit</a>
+                        <form class="d-inline" method="post"
+                              th:action="@{/employees/delete/{id}(id=${e.id})}"
+                              onsubmit="return confirm('Delete this employee?');">
+                            <button class="btn btn-sm btn-outline-danger" type="submit">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(employees)}">
+                    <td colspan="8" class="text-center text-muted py-4">No employees found.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>
