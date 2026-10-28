@@ -207,9 +207,9 @@ On Windows PowerShell: `.\mvnw.cmd test`
 - [ ] Pagination for the employee list
 - [ ] Department management pages
 - [ ] Role-based login with Spring Security
-- [ ] Live demo deployment (
+- [ ] Live Link deployment (
 
-🔗 **Live Demo:** https://employee-management-system-yuzi.onrender.com
+🔗 **Live Link:** https://employee-management-system-yuzi.onrender.com
 > Hosted on a free server that sleeps when idle, so the first load can take about a minute.)
 
 ---
