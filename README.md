@@ -207,13 +207,16 @@ On Windows PowerShell: `.\mvnw.cmd test`
 - [ ] Pagination for the employee list
 - [ ] Department management pages
 - [ ] Role-based login with Spring Security
-- [ ] Live demo deployment (Docker + Render)
+- [ ] Live demo deployment (
+
+🔗 **Live Demo:** https://employee-management-system-yuzi.onrender.com
+> Hosted on a free server that sleeps when idle, so the first load can take about a minute.)
 
 ---
 
 ## 👨‍💻 Author
 
-**Rahul**
+**Rahul Singh**
 B.Tech Computer Science and Engineering student, Lucknow, India
 
 [![GitHub](https://img.shields.io/badge/GitHub-Rahul--web01-181717?style=flat-square&logo=github)](https://github.com/Rahul-web01)
