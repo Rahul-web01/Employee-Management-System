@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Sign in')}"></head>
+<body class="bg-light">
+
+<nav th:replace="~{fragments :: navbar}"></nav>
+
+<div class="container" style="max-width: 420px;">
+    <div class="card shadow-sm">
+        <div class="card-body p-4">
+            <h4 class="mb-4 text-center">Sign in</h4>
+
+            <div class="alert alert-danger py-2" th:if="${param.error}">
+                Invalid username or password.
+            </div>
+            <div class="alert alert-success py-2" th:if="${param.logout}">
+                You have been signed out.
+            </div>
+
+            <form th:action="@{/login}" method="post">
+                <div class="mb-3">
+                    <label class="form-label" for="username">Username</label>
+                    <input class="form-control" id="username" name="username"
+                           autocomplete="username" required autofocus>
+                </div>
+                <div class="mb-4">
+                    <label class="form-label" for="password">Password</label>
+                    <input class="form-control" id="password" name="password" type="password"
+                           autocomplete="current-password" required>
+                </div>
+                <button class="btn btn-primary w-100" type="submit">Sign in</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="card shadow-sm mt-3" th:if="${showDemoLogins}">
+        <div class="card-body p-3">
+            <h6 class="mb-2">Demo accounts</h6>
+            <table class="table table-sm mb-0 small">
+                <thead>
+                <tr><th>Username</th><th>Password</th><th>Can</th></tr>
+                </thead>
+                <tbody>
+                <tr><td><code>admin</code></td><td><code>admin123</code></td><td>add, edit, delete</td></tr>
+                <tr><td><code>hr</code></td><td><code>hr123</code></td><td>add, edit</td></tr>
+                <tr><td><code>viewer</code></td><td><code>viewer123</code></td><td>view and search</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>

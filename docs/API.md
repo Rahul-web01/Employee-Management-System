@@ -4,14 +4,21 @@ This application renders HTML on the server (Thymeleaf), so its routes return we
 
 ## Routes
 
-| Method | URL | Description | Success response |
-|---|---|---|---|
-| GET | `/` | Home | Redirects to `/employees` |
-| GET | `/employees` | Employee list. Optional query `keyword` searches first and last name (case-insensitive). | 200, `employees/list` page |
-| GET | `/employees/new` | Empty add form | 200, `employees/form` page |
-| GET | `/employees/edit/{id}` | Edit form filled with the employee | 200, `employees/form` page |
-| POST | `/employees/save` | Create (no `id`) or update (with `id`) | 302 redirect to `/employees` |
-| POST | `/employees/delete/{id}` | Delete an employee | 302 redirect to `/employees` |
+Every page except `/login` requires signing in. A signed-out visitor is redirected to `/login`.
+
+| Method | URL | Description | Who can use it | Success response |
+|---|---|---|---|---|
+| GET | `/login` | Sign-in page | Everyone | 200, `login` page |
+| POST | `/login` | Sign in (`username`, `password`) | Everyone | 302 to the page you asked for, or `/employees`. Wrong password: 302 to `/login?error` |
+| POST | `/logout` | Sign out | Signed-in users | 302 to `/login?logout` |
+| GET | `/` | Home | Signed-in users | Redirects to `/employees` |
+| GET | `/employees` | Employee list. Optional query `keyword` searches first and last name (case-insensitive). | ADMIN, HR, VIEWER | 200, `employees/list` page |
+| GET | `/employees/new` | Empty add form | ADMIN, HR | 200, `employees/form` page |
+| GET | `/employees/edit/{id}` | Edit form filled with the employee | ADMIN, HR | 200, `employees/form` page |
+| POST | `/employees/save` | Create (no `id`) or update (with `id`) | ADMIN, HR | 302 redirect to `/employees` |
+| POST | `/employees/delete/{id}` | Delete an employee | ADMIN | 302 redirect to `/employees` |
+
+All POST forms carry a CSRF token (added automatically by Thymeleaf). A POST without a valid token gets 403.
 
 ## Request: `POST /employees/save`
 
@@ -43,6 +50,7 @@ Errors are handled in one place (`GlobalExceptionHandler`) and shown on `error/e
 | HTTP status | When it happens |
 |---|---|
 | 400 | A URL value has the wrong type, for example `/employees/edit/abc` |
+| 403 | Your role is not allowed to do this (for example a VIEWER opening `/employees/new`), or a form was sent without a CSRF token |
 | 404 | Employee or department id not found, or the page does not exist |
 | 409 | A duplicate or linked record blocks the action |
 | 500 | Any unexpected error. The user sees a generic message; details go to the server log only. |
@@ -52,3 +60,5 @@ Errors are handled in one place (`GlobalExceptionHandler`) and shown on `error/e
 **Department**: `id`, `name` (unique), `location`
 
 **Employee**: `id`, `firstName`, `lastName`, `email` (unique), `designation`, `salary`, `hireDate`, `department` (many employees to one department)
+
+**AppUser** (table `app_users`): `id`, `username` (unique), `password` (BCrypt hash, never plain text), `role` (`ADMIN`, `HR` or `VIEWER`)

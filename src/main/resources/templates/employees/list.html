@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="~{fragments :: head('Employees')}"></head>
 <body class="bg-light">
 
@@ -32,7 +33,7 @@
                     <th>Department</th>
                     <th>Salary</th>
                     <th>Hired</th>
-                    <th class="text-end">Actions</th>
+                    <th class="text-end" sec:authorize="hasAnyRole('ADMIN', 'HR')">Actions</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -47,10 +48,10 @@
                     </td>
                     <td th:text="${e.salary != null ? '₹ ' + #numbers.formatDecimal(e.salary, 1, 'COMMA', 2, 'POINT') : '-'}">0</td>
                     <td th:text="${e.hireDate}">2026-01-01</td>
-                    <td class="text-end">
+                    <td class="text-end" sec:authorize="hasAnyRole('ADMIN', 'HR')">
                         <a class="btn btn-sm btn-outline-primary"
                            th:href="@{/employees/edit/{id}(id=${e.id})}">Edit</a>
-                        <form class="d-inline" method="post"
+                        <form class="d-inline" method="post" sec:authorize="hasRole('ADMIN')"
                               th:action="@{/employees/delete/{id}(id=${e.id})}"
                               onsubmit="return confirm('Delete this employee?');">
                             <button class="btn btn-sm btn-outline-danger" type="submit">Delete</button>

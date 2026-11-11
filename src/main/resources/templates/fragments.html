@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:fragment="head(title)">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -10,7 +11,22 @@
 <nav th:fragment="navbar" class="navbar navbar-dark bg-dark mb-4">
     <div class="container">
         <a class="navbar-brand fw-bold" th:href="@{/employees}">👥 Employee Management System</a>
-        <a class="btn btn-outline-light btn-sm" th:href="@{/employees/new}">+ Add Employee</a>
+
+        <div class="d-flex align-items-center gap-2" sec:authorize="isAuthenticated()">
+            <a class="btn btn-outline-light btn-sm" th:href="@{/employees/new}"
+               sec:authorize="hasAnyRole('ADMIN', 'HR')">+ Add Employee</a>
+
+            <span class="navbar-text small text-light ms-2">
+                <span sec:authentication="name">user</span>
+                <span class="badge bg-danger ms-1" sec:authorize="hasRole('ADMIN')">Admin</span>
+                <span class="badge bg-warning text-dark ms-1" sec:authorize="hasRole('HR')">HR</span>
+                <span class="badge bg-secondary ms-1" sec:authorize="hasRole('VIEWER')">Viewer</span>
+            </span>
+
+            <form class="d-inline" th:action="@{/logout}" method="post">
+                <button class="btn btn-light btn-sm" type="submit">Logout</button>
+            </form>
+        </div>
     </div>
 </nav>
 </body>
