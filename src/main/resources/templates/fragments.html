@@ -27,6 +27,9 @@
                 <button class="btn btn-light btn-sm" type="submit">Logout</button>
             </form>
         </div>
+
+        <a class="btn btn-light btn-sm" th:href="@{/login}"
+           sec:authorize="!isAuthenticated()">Sign in</a>
     </div>
 </nav>
 </body>

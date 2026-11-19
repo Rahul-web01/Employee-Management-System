@@ -29,6 +29,7 @@ Small and medium organizations need a simple, secure portal to track personnel r
 | Status | Feature |
 |:---:|---|
 | ✅ | Full CRUD for employees: create, view, update, delete |
+| ✅ | Anyone can view and search employees; sign in to add, edit or delete |
 | ✅ | Login with three roles (Admin, HR, Viewer) using Spring Security |
 | ✅ | Passwords stored as BCrypt hashes, CSRF protection on every form |
 | ✅ | Buttons shown or hidden by role, plus server-side checks (403 page if a URL is typed directly) |
@@ -134,7 +135,7 @@ Hibernate creates the tables automatically on the first run. Four sample departm
 |---|---|---|---|
 | GET / POST | `/login` | Sign in | Everyone |
 | POST | `/logout` | Sign out | Signed in |
-| GET | `/employees` | List employees (optional `?keyword=`) | Admin, HR, Viewer |
+| GET | `/employees` | List employees (optional `?keyword=`) | Everyone, no sign-in needed |
 | GET | `/employees/new` | Show the add form | Admin, HR |
 | GET | `/employees/edit/{id}` | Show the edit form | Admin, HR |
 | POST | `/employees/save` | Create or update an employee | Admin, HR |
@@ -146,7 +147,7 @@ Full details, form fields, validation rules, and error responses are in [docs/AP
 
 ## 🔐 Login and Roles
 
-Every page needs a sign-in. Three accounts are created automatically:
+Anyone can open the employee list and search it without an account. Adding, editing and deleting need a sign-in. Three accounts are created automatically:
 
 | Username | Default password | Role | Can |
 |---|---|---|---|
@@ -276,7 +277,7 @@ On Windows PowerShell: `.\mvnw.cmd test`
 - [ ] GitHub Actions CI
 
 🔗 **Live Link:** https://employee-management-system-yuzi.onrender.com
-> Hosted on a free server that sleeps when idle, so the first load can take about a minute. Sign in with a demo account from the [Login and Roles](#-login-and-roles) section.
+> Hosted on a free server that sleeps when idle, so the first load can take about a minute. Browse freely; to add, edit or delete, sign in with a demo account from the [Login and Roles](#-login-and-roles) section.
 
 ---
 

@@ -14,9 +14,8 @@ import org.springframework.security.web.SecurityFilterChain;
  * Who can open which page.
  *
  * <ul>
- *   <li>Everyone must sign in first (except the login page itself).</li>
- *   <li>VIEWER, HR and ADMIN can see and search the employee list.</li>
- *   <li>HR and ADMIN can add and edit employees.</li>
+ *   <li>Anyone, even without signing in, can see and search the employee list.</li>
+ *   <li>HR and ADMIN can add and edit employees (signed-out visitors are sent to the login page).</li>
  *   <li>Only ADMIN can delete employees.</li>
  * </ul>
  */
@@ -31,6 +30,8 @@ public class SecurityConfig {
                 // internal forwards to the error / access-denied pages
                 .dispatcherTypeMatchers(DispatcherType.FORWARD, DispatcherType.ERROR).permitAll()
                 .requestMatchers("/login", "/access-denied", "/error").permitAll()
+                // public, read-only: home page, employee list and search
+                .requestMatchers(HttpMethod.GET, "/", "/employees").permitAll()
                 .requestMatchers(HttpMethod.POST, "/employees/delete/**").hasRole("ADMIN")
                 .requestMatchers("/employees/new", "/employees/edit/**").hasAnyRole("ADMIN", "HR")
                 .requestMatchers(HttpMethod.POST, "/employees/save").hasAnyRole("ADMIN", "HR")

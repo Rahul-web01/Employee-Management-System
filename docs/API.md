@@ -4,15 +4,15 @@ This application renders HTML on the server (Thymeleaf), so its routes return we
 
 ## Routes
 
-Every page except `/login` requires signing in. A signed-out visitor is redirected to `/login`.
+The employee list and search are public. Adding, editing and deleting need a sign-in; a signed-out visitor who tries is redirected to `/login`.
 
 | Method | URL | Description | Who can use it | Success response |
 |---|---|---|---|---|
 | GET | `/login` | Sign-in page | Everyone | 200, `login` page |
 | POST | `/login` | Sign in (`username`, `password`) | Everyone | 302 to the page you asked for, or `/employees`. Wrong password: 302 to `/login?error` |
 | POST | `/logout` | Sign out | Signed-in users | 302 to `/login?logout` |
-| GET | `/` | Home | Signed-in users | Redirects to `/employees` |
-| GET | `/employees` | Employee list. Optional query `keyword` searches first and last name (case-insensitive). | ADMIN, HR, VIEWER | 200, `employees/list` page |
+| GET | `/` | Home | Everyone | Redirects to `/employees` |
+| GET | `/employees` | Employee list. Optional query `keyword` searches first and last name (case-insensitive). | Everyone | 200, `employees/list` page |
 | GET | `/employees/new` | Empty add form | ADMIN, HR | 200, `employees/form` page |
 | GET | `/employees/edit/{id}` | Edit form filled with the employee | ADMIN, HR | 200, `employees/form` page |
 | POST | `/employees/save` | Create (no `id`) or update (with `id`) | ADMIN, HR | 302 redirect to `/employees` |

@@ -68,14 +68,57 @@ class SecurityAccessTest {
         return employeeRepository.save(e);
     }
 
-    // ---------- signing in and out ----------
+    // ---------- signed-out visitors: view and search only ----------
 
     @Test
-    void signedOutVisitorIsSentToLoginPage() throws Exception {
+    void signedOutVisitorCanViewTheListWithoutAnyEditButtons() throws Exception {
+        saveEmployee("public.list@example.com");
+
         mvc.perform(get("/employees"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("public.list@example.com")))
+                .andExpect(content().string(containsString("Sign in")))
+                .andExpect(content().string(not(containsString("+ Add Employee"))))
+                .andExpect(content().string(not(containsString(">Edit<"))))
+                .andExpect(content().string(not(containsString(">Delete<"))))
+                .andExpect(content().string(not(containsString("Logout"))));
+    }
+
+    @Test
+    void signedOutVisitorCanSearch() throws Exception {
+        saveEmployee("public.search@example.com");
+
+        mvc.perform(get("/employees").param("keyword", "Person"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("public.search@example.com")));
+    }
+
+    @Test
+    void signedOutVisitorIsSentToLoginToAddAnEmployee() throws Exception {
+        mvc.perform(get("/employees/new"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/login"));
     }
+
+    @Test
+    void signedOutVisitorCannotSaveOrDelete() throws Exception {
+        Employee e = saveEmployee("public.nodelete@example.com");
+
+        mvc.perform(post("/employees/delete/{id}", e.getId()).with(csrf()))
+                .andExpect(redirectedUrl("/login"));
+        mvc.perform(post("/employees/save").with(csrf())
+                        .param("firstName", "Anon")
+                        .param("lastName", "Visitor")
+                        .param("email", "anon.visitor@example.com")
+                        .param("salary", "1000")
+                        .param("departmentId", department.getId().toString()))
+                .andExpect(redirectedUrl("/login"));
+
+        assertTrue(employeeRepository.existsById(e.getId()));
+        assertFalse(employeeRepository.existsByEmail("anon.visitor@example.com"));
+    }
+
+    // ---------- signing in and out ----------
 
     @Test
     void loginPageIsPublic() throws Exception {
