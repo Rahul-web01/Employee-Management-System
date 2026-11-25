@@ -1,297 +1,234 @@
 <div align="center">
 
-# 👥 Employee Management System
+# Employee Management System
 
-**A full-stack CRUD web app to manage employees, departments, and salary records**
+**A secure Spring Boot web app for managing employees and departments, with role-based access for Admin, HR and Viewer users.**
 
-![Java](https://img.shields.io/badge/Java-17-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
-![Spring Boot](https://img.shields.io/badge/Spring_Boot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white)
-![Spring Security](https://img.shields.io/badge/Spring_Security-6DB33F?style=for-the-badge&logo=springsecurity&logoColor=white)
-![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
-![Thymeleaf](https://img.shields.io/badge/Thymeleaf-005F0F?style=for-the-badge&logo=thymeleaf&logoColor=white)
-![Bootstrap](https://img.shields.io/badge/Bootstrap-7952B3?style=for-the-badge&logo=bootstrap&logoColor=white)
-![Maven](https://img.shields.io/badge/Maven-C71A36?style=for-the-badge&logo=apachemaven&logoColor=white)
+[![Live demo](https://img.shields.io/badge/Live_demo-Render-46E3B7?style=for-the-badge&logo=render&logoColor=white)](https://employee-management-system-yuzi.onrender.com)
 
-*Java Full Stack minor project, built during my internship at **Adyapan** 🚀*
+![Java](https://img.shields.io/badge/Java-17-ED8B00?style=flat-square&logo=openjdk&logoColor=white)
+![Spring Boot](https://img.shields.io/badge/Spring_Boot-4.1-6DB33F?style=flat-square&logo=springboot&logoColor=white)
+![Spring Security](https://img.shields.io/badge/Spring_Security-7-6DB33F?style=flat-square&logo=springsecurity&logoColor=white)
+![Spring Data JPA](https://img.shields.io/badge/Spring_Data_JPA-Hibernate-59666C?style=flat-square&logo=hibernate&logoColor=white)
+![Thymeleaf](https://img.shields.io/badge/Thymeleaf-005F0F?style=flat-square&logo=thymeleaf&logoColor=white)
+![Bootstrap](https://img.shields.io/badge/Bootstrap-5.3-7952B3?style=flat-square&logo=bootstrap&logoColor=white)
+![MySQL](https://img.shields.io/badge/MySQL-8-4479A1?style=flat-square&logo=mysql&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=docker&logoColor=white)
+![Maven](https://img.shields.io/badge/Maven-C71A36?style=flat-square&logo=apachemaven&logoColor=white)
 
 </div>
 
----
+> **Live demo:** https://employee-management-system-yuzi.onrender.com
+> Runs on Render's free plan, which sleeps when idle, so the first request can take about a minute. Browse freely, or sign in with a [demo account](#roles-and-permissions) to add, edit or delete.
 
-## 📖 About
+Built as the Java Full Stack minor project during my internship at **Adyapan**.
 
-Small and medium organizations need a simple, secure portal to track personnel records, department assignments, and salary details. This project is a **server-side rendered web application** that does exactly that, using a clean layered architecture (Controller → Service → Repository → Database).
+## What it does
 
----
+A server-rendered portal for keeping personnel records: each employee has contact details, a designation, a salary, a hire date and a department. Anyone can browse and search the list; signed-in HR staff can add and edit records, and only an Admin can delete them. Access rules are enforced on the server, not only by hiding buttons.
 
-## ✨ Features
+## Features
 
-| Status | Feature |
-|:---:|---|
-| ✅ | Full CRUD for employees: create, view, update, delete |
-| ✅ | Anyone can view and search employees; sign in to add, edit or delete |
-| ✅ | Login with three roles (Admin, HR, Viewer) using Spring Security |
-| ✅ | Passwords stored as BCrypt hashes, CSRF protection on every form |
-| ✅ | Buttons shown or hidden by role, plus server-side checks (403 page if a URL is typed directly) |
-| ✅ | Many-to-one relationship: each employee belongs to a department |
-| ✅ | Search employees by first or last name (case-insensitive) |
-| ✅ | Responsive Thymeleaf pages styled with Bootstrap |
-| ✅ | Form validation with field-level error messages (`@NotBlank`, `@Email`, `@Size`, and more) |
-| ✅ | Duplicate email protection |
-| ✅ | Global exception handler with friendly 400, 404, 409, and 500 pages |
-| ✅ | Unit tests (JUnit 5 + Mockito), repository tests (H2), and access-rule tests for every role (MockMvc) |
-| ✅ | Deployed with Docker on Render, database on TiDB Cloud |
+- **Employee CRUD** with a many-to-one link to departments
+- **Case-insensitive search** by first or last name
+- **Spring Security form login** with three roles (Admin, HR, Viewer), BCrypt-hashed passwords and CSRF tokens on every form
+- **Role-aware UI**: buttons a role can't use are hidden, and typing the URL directly returns a 403 page
+- **Bean Validation** with field-level error messages, plus duplicate-email protection
+- **Global exception handler** that renders friendly 400, 404, 409 and 500 pages
+- **Tests** for services (JUnit 5 + Mockito), repositories and validation (H2), and access rules for every role (MockMvc + Spring Security Test)
+- **Docker deployment** on Render with a MySQL-compatible TiDB Cloud database; the image uses Class Data Sharing to start faster on a small CPU
 
----
+## Screenshots
 
-## 🛠️ Tech Stack
-
-| Layer | Technology |
+| Employee list and search | Add form with validation |
 |---|---|
-| **Language** | Java 17 |
-| **Framework** | Spring Boot 4 |
-| **Security** | Spring Security 7 (form login, roles, BCrypt, CSRF) |
-| **Persistence** | Spring Data JPA, Hibernate |
-| **Database** | MySQL 8 locally, TiDB Cloud (MySQL-compatible) in production, H2 for tests. PostgreSQL also supported. |
-| **UI** | Thymeleaf (+ Spring Security extras), Bootstrap 5 |
-| **Validation** | Jakarta Bean Validation |
-| **Testing** | JUnit 5, Mockito, MockMvc, Spring Security Test |
-| **Build tool** | Maven (wrapper included) |
-| **Deployment** | Docker (multi-stage, CDS for fast startup) on Render |
+| ![Employee list](docs/screenshots/employee-list.png) | ![Form validation](docs/screenshots/form-validation.png) |
 
----
+## Roles and permissions
 
-## 🏗️ Architecture
+Rules come from [`SecurityConfig`](src/main/java/com/example/employee_management_system/config/SecurityConfig.java).
 
-```
-   Browser
-      │
-      ▼
-┌─────────────┐   ┌─────────────┐   ┌──────────────┐   ┌─────────┐
-│ Controller  │ → │   Service   │ → │  Repository  │ → │  MySQL  │
-│ (web layer) │   │ (business)  │   │ (Spring JPA) │   │   DB    │
-└─────────────┘   └─────────────┘   └──────────────┘   └─────────┘
-      │
-      ▼
- Thymeleaf templates (HTML)
-```
+| Action | Visitor (signed out) | Viewer | HR | Admin |
+|---|:---:|:---:|:---:|:---:|
+| View and search employees | ✅ | ✅ | ✅ | ✅ |
+| Add an employee | | | ✅ | ✅ |
+| Edit an employee | | | ✅ | ✅ |
+| Delete an employee | | | | ✅ |
 
----
+Three demo accounts are created on startup, and their passwords are re-synced from configuration on every start:
 
-## 🗂️ Project Structure
+| Username | Demo password | Role |
+|---|---|---|
+| `admin` | `admin123` | ADMIN |
+| `hr` | `hr123` | HR |
+| `viewer` | `viewer123` | VIEWER |
 
-```
-src/main/java/com/example/employee_management_system
-├── config         # SecurityConfig (who can open what), DataLoader (sample departments), UserSeeder (sign-in accounts)
-├── controller     # Handles web requests (employees, login, access denied)
-├── security       # Loads users from the database for Spring Security
-├── service        # Business logic
-├── repository     # Database access (Spring Data JPA)
-├── entity         # JPA entities (Department, Employee, AppUser, Role)
-└── exception      # Custom exceptions + global handler
+These are public demo defaults. Override them with `ADMIN_PASSWORD`, `HR_PASSWORD` and `VIEWER_PASSWORD`, and set `SHOW_DEMO_LOGINS=false` to hide the demo box on the login page.
 
-src/main/resources
-├── templates      # Thymeleaf pages (login, employees/, error/, fragments)
-└── application.properties
+## Architecture
 
-src/test/java/...  # Service, repository, validation, and security access tests
+```mermaid
+flowchart LR
+    B[Browser] --> S[Spring Security<br/>filter chain]
+    S --> C[Controllers]
+    C --> SV[Services]
+    SV --> R[Spring Data JPA<br/>repositories]
+    R --> DB[(MySQL / TiDB Cloud)]
+    C --> V[Thymeleaf views<br/>+ Bootstrap]
 ```
 
----
-
-## 🗄️ Database Design
-
-```
-┌──────────────────┐            ┌──────────────────────┐
-│   departments    │            │      employees       │
-├──────────────────┤            ├──────────────────────┤
-│ id (PK)          │◄───────────│ department_id (FK)   │
-│ name (unique)    │  1      *  │ id (PK)              │
-│ location         │            │ first_name           │
-└──────────────────┘            │ last_name            │
-                                │ email (unique)       │
-                                │ designation          │
-                                │ salary               │
-                                │ hire_date            │
-                                └──────────────────────┘
-
-┌──────────────────────┐
-│      app_users       │
-├──────────────────────┤
-│ id (PK)              │
-│ username (unique)    │
-│ password (BCrypt)    │
-│ role                 │   ADMIN | HR | VIEWER
-└──────────────────────┘
+```mermaid
+erDiagram
+    DEPARTMENTS ||--o{ EMPLOYEES : has
+    DEPARTMENTS {
+        bigint id PK
+        string name UK
+        string location
+    }
+    EMPLOYEES {
+        bigint id PK
+        string first_name
+        string last_name
+        string email UK
+        string designation
+        decimal salary
+        date hire_date
+        bigint department_id FK
+    }
+    APP_USERS {
+        bigint id PK
+        string username UK
+        string password "BCrypt hash"
+        string role "ADMIN, HR or VIEWER"
+    }
 ```
 
-Hibernate creates the tables automatically on the first run. Four sample departments (Engineering, Human Resources, Finance, Marketing) are added if the table is empty, and the three sign-in accounts are created on every start if missing.
+Hibernate creates the tables on first run (`ddl-auto=update`). Four sample departments (Engineering, Human Resources, Finance, Marketing) are inserted when the table is empty.
 
----
+## Routes
 
-## 🌐 Routes
-
-| Method | URL | Purpose | Who |
+| Method | URL | Purpose | Access |
 |---|---|---|---|
-| GET / POST | `/login` | Sign in | Everyone |
+| GET | `/` | Redirects to `/employees` | Everyone |
+| GET, POST | `/login` | Sign-in page / submit credentials | Everyone |
 | POST | `/logout` | Sign out | Signed in |
-| GET | `/employees` | List employees (optional `?keyword=`) | Everyone, no sign-in needed |
-| GET | `/employees/new` | Show the add form | Admin, HR |
-| GET | `/employees/edit/{id}` | Show the edit form | Admin, HR |
-| POST | `/employees/save` | Create or update an employee | Admin, HR |
-| POST | `/employees/delete/{id}` | Delete an employee | Admin |
+| GET | `/employees?keyword=` | List employees, optional name search | Everyone |
+| GET | `/employees/new` | Add form | Admin, HR |
+| GET | `/employees/edit/{id}` | Edit form | Admin, HR |
+| POST | `/employees/save` | Create or update | Admin, HR |
+| POST | `/employees/delete/{id}` | Delete | Admin |
 
-Full details, form fields, validation rules, and error responses are in [docs/API.md](docs/API.md).
+Form fields, validation rules and error responses are documented in [docs/API.md](docs/API.md).
 
----
+## Getting started
 
-## 🔐 Login and Roles
-
-Anyone can open the employee list and search it without an account. Adding, editing and deleting need a sign-in. Three accounts are created automatically:
-
-| Username | Default password | Role | Can |
-|---|---|---|---|
-| `admin` | `admin123` | ADMIN | view, search, add, edit, **delete** |
-| `hr` | `hr123` | HR | view, search, add, edit |
-| `viewer` | `viewer123` | VIEWER | view and search only |
-
-- Passwords are stored as **BCrypt hashes**, never as plain text.
-- Buttons a role can't use are hidden, **and** the server blocks the URL too: typing `/employees/new` as a viewer shows a 403 page.
-- Every form carries a **CSRF token**, so other websites can't submit forms on a signed-in user's behalf.
-
-To use your own passwords, set these environment variables (changes apply on the next start):
+### Configuration
 
 | Variable | Default | Purpose |
 |---|---|---|
-| `ADMIN_PASSWORD` | `admin123` | Password for `admin` |
-| `HR_PASSWORD` | `hr123` | Password for `hr` |
-| `VIEWER_PASSWORD` | `viewer123` | Password for `viewer` |
-| `SHOW_DEMO_LOGINS` | `true` | Show the demo accounts box on the login page. Set to `false` once you change the passwords. |
+| `DB_URL` | `jdbc:mysql://localhost:3306/ems_db` | JDBC URL |
+| `DB_USER` | `root` | Database user |
+| `DB_PASSWORD` | *(empty)* | Database password |
+| `PORT` | `8080` | HTTP port (Render sets this) |
+| `ADMIN_PASSWORD`, `HR_PASSWORD`, `VIEWER_PASSWORD` | demo values | Sign-in passwords |
+| `SHOW_DEMO_LOGINS` | `true` | Show demo accounts on the login page |
 
----
+For local runs you can instead put `spring.datasource.password=...` in a `local.properties` file next to `pom.xml`; it is git-ignored and loaded automatically.
 
-## 🚀 Getting Started
+### Run locally
 
-### Prerequisites
-
-- ☕ JDK 17 or higher
-- 🐬 MySQL 8 (server running)
-- 🔧 Git
-
-> You do **not** need to install Maven. The Maven Wrapper is included.
-
-### 1️⃣ Clone the repository
+Requires JDK 17+ and a running MySQL 8 server. Maven is not needed; the wrapper is included.
 
 ```bash
 git clone https://github.com/Rahul-web01/Employee-Management-System.git
 cd Employee-Management-System
+mysql -u root -p -e "CREATE DATABASE IF NOT EXISTS ems_db;"
+DB_PASSWORD=your_mysql_password ./mvnw spring-boot:run
 ```
 
-### 2️⃣ Create the database
-
-Run in MySQL Workbench or the MySQL command line:
-
-```sql
-CREATE DATABASE IF NOT EXISTS ems_db;
-```
-
-### 3️⃣ Set your database password
-
-Create a file named `local.properties` in the project root (next to `pom.xml`) with one line:
-
-```properties
-spring.datasource.password=YOUR_PASSWORD
-```
-
-> 🔒 `local.properties` is in `.gitignore`, so your password is never pushed to GitHub.
-
-The app connects to `jdbc:mysql://localhost:3306/ems_db` as user `root` by default. You can override this with the environment variables `DB_URL`, `DB_USER`, and `DB_PASSWORD`.
-
-### 4️⃣ Run the application
-
-**Windows (PowerShell):**
+On Windows PowerShell:
 
 ```powershell
-.\mvnw.cmd spring-boot:run
+$env:DB_PASSWORD="your_mysql_password"; .\mvnw.cmd spring-boot:run
 ```
 
-**Mac / Linux:**
+Open http://localhost:8080.
+
+### Run with Docker
 
 ```bash
-./mvnw spring-boot:run
+docker build -t employee-management-system .
+docker run --rm -p 8080:8080 \
+  --add-host=host.docker.internal:host-gateway \
+  -e DB_URL="jdbc:mysql://host.docker.internal:3306/ems_db" \
+  -e DB_USER=root \
+  -e DB_PASSWORD=your_mysql_password \
+  employee-management-system
 ```
 
-Then open 👉 **http://localhost:8080** and sign in with one of the accounts above (for example `admin` / `admin123`).
+This connects the container to MySQL running on your machine. Point `DB_URL` at any other MySQL-compatible database (for example TiDB Cloud) the same way.
 
----
+### Run tests
 
-## ☁️ Deployment (Render + TiDB Cloud)
-
-The app runs as a Docker container on Render's free plan. The database is a free TiDB Cloud Starter instance (MySQL-compatible, no expiry).
-
-Environment variables set on Render:
-
-| Variable | Example |
-|---|---|
-| `DB_URL` | `jdbc:mysql://<tidb-host>:4000/ems_db?sslMode=VERIFY_IDENTITY&enabledTLSProtocols=TLSv1.2,TLSv1.3&createDatabaseIfNotExist=true` |
-| `DB_USER` | `<prefix>.root` (from TiDB's Connect dialog) |
-| `DB_PASSWORD` | the TiDB password |
-| `SPRING_DATASOURCE_HIKARI_MAX_LIFETIME` | `300000` (recycle connections every 5 minutes; TiDB closes idle ones) |
-| `ADMIN_PASSWORD`, `HR_PASSWORD`, `VIEWER_PASSWORD` | optional, see [Login and Roles](#-login-and-roles) |
-
-Render sets `PORT` itself; the app listens on it automatically. The Dockerfile builds a Class Data Sharing archive so the app starts in about 2 minutes even on Render's 0.1 CPU free plan.
-
----
-
-## 🧪 Running Tests
-
-Tests use an in-memory H2 database, so MySQL is not needed.
+Tests use an in-memory H2 database, so MySQL is not required.
 
 ```bash
 ./mvnw test
 ```
 
-On Windows PowerShell: `.\mvnw.cmd test`
+## Deployment
 
----
+The live demo runs this Dockerfile as a Render web service, backed by a free TiDB Cloud cluster. Set `DB_URL`, `DB_USER` and `DB_PASSWORD` in Render (TiDB needs TLS parameters in the JDBC URL, such as `sslMode=VERIFY_IDENTITY`), plus `SPRING_DATASOURCE_HIKARI_MAX_LIFETIME=300000` so pooled connections are recycled before TiDB closes idle ones.
 
-## 📸 Screenshots
+## Tech stack
 
-### Employee list and search
-![Employee list](docs/screenshots/employee-list.png)
+| Layer | Technology |
+|---|---|
+| Language | Java 17 |
+| Framework | Spring Boot 4.1 (Spring MVC) |
+| Security | Spring Security 7: form login, roles, BCrypt, CSRF |
+| Persistence | Spring Data JPA, Hibernate |
+| Database | MySQL 8 locally, TiDB Cloud in production, H2 for tests |
+| UI | Thymeleaf + Spring Security extras, Bootstrap 5.3 |
+| Testing | JUnit 5, Mockito, MockMvc, Spring Security Test |
+| Build and deploy | Maven wrapper, multi-stage Docker image, Render |
 
-### Add employee form with validation
-![Validation](docs/screenshots/form-validation.png)
+## Project structure
 
----
+```
+src/main/java/com/example/employee_management_system
+├── config        SecurityConfig, DataLoader (sample departments), UserSeeder (demo accounts)
+├── controller    Employee, auth and home controllers
+├── entity        Employee, Department, AppUser, Role
+├── exception     Custom exceptions and GlobalExceptionHandler
+├── repository    Spring Data JPA repositories
+├── security      UserDetailsService backed by the database
+└── service       Business logic
+src/main/resources/templates   Thymeleaf pages (login, employees, error, fragments)
+src/test/java                  Service, repository, validation and security tests
+docs/                          Route documentation and screenshots
+```
 
-## 🗺️ Roadmap
+## Roadmap
 
-- [x] Role-based login with Spring Security
-- [x] Live deployment (Render + TiDB Cloud)
-- [ ] Pagination and sorting for the employee list
-- [ ] Department management pages
-- [ ] REST API with Swagger docs
-- [ ] Dashboard with charts
-- [ ] Flyway database migrations
-- [ ] GitHub Actions CI
+- Pagination and sorting for the employee list
+- Department management pages
+- REST API with OpenAPI / Swagger docs
+- Dashboard with charts
+- Flyway database migrations
+- GitHub Actions CI
 
-🔗 **Live Link:** https://employee-management-system-yuzi.onrender.com
-> Hosted on a free server that sleeps when idle, so the first load can take about a minute. Browse freely; to add, edit or delete, sign in with a demo account from the [Login and Roles](#-login-and-roles) section.
+## Author
 
----
-
-## 👨‍💻 Author
-
-**Rahul Singh**
-B.Tech Computer Science and Engineering student, Lucknow, India
+**Rahul Singh**, B.Tech Computer Science and Engineering student, Lucknow, India
 
 [![GitHub](https://img.shields.io/badge/GitHub-Rahul--web01-181717?style=flat-square&logo=github)](https://github.com/Rahul-web01)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-rahul--singh--cs-0A66C2?style=flat-square&logo=linkedin)](https://www.linkedin.com/in/rahul-singh-cs)
 
 ---
 
 <div align="center">
 
-⭐ If you like this project, give it a star!
+If you found this useful, consider giving it a ⭐
 
 </div>
